@@ -42,7 +42,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req -> req
                         .requestMatchers("/login/**", "/register/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/prix/**").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/produit/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/produit/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/produit/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/produit/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/produit/**").hasAuthority("ADMIN")
