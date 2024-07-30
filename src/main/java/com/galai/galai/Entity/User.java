@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "admin")
-public class User implements UserDetails {
+ public class User implements UserDetails {
     @Id
     @GeneratedValue
     private Integer id;
