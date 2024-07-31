@@ -69,6 +69,10 @@ public class ProduitController {
         }
     }
 
+
+
+
+
 //    @GetMapping("/getAll")
 //    public ResponseEntity<?> getAllProduit() {
 //        try {
@@ -86,6 +90,9 @@ public class ProduitController {
 //            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 //        }
 //    }
+
+
+
 
 
     @GetMapping("/getAll")
