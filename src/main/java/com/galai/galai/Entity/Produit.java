@@ -6,9 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,7 +18,7 @@ public class Produit {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
-    @Column(nullable = false, unique=true)
+    @Column(nullable = false, unique = true)
     @NotBlank(message = "Le nom est obligatoire")
     private String nom;
 
@@ -37,8 +35,8 @@ public class Produit {
 
     @Column(nullable = false)
     @NotNull(message = "La photo du produit ne peut pas être vide")
-    private String photo;
+    @Lob
+    private byte[] photo;
+
     private Integer remise = 0;
-
-
 }

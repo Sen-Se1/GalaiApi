@@ -6,7 +6,9 @@ import com.galai.galai.Repository.ProduitRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +32,16 @@ public class ProduitService {
             }
         }
         return savedProduit;
+    }
+
+    public Produit saveProductWithPhoto(String nom, String description, Integer qtt, MultipartFile photo, Integer remise) throws IOException {
+        Produit produit = new Produit();
+        produit.setNom(nom);
+        produit.setDescription(description);
+        produit.setQtt(qtt);
+        produit.setPhoto(photo.getBytes());
+        produit.setRemise(remise);
+        return save(produit);
     }
 
     public List<Produit> saveAll(List<Produit> articles) {
