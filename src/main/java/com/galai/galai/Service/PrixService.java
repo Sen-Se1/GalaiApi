@@ -18,5 +18,9 @@ public class PrixService {
         return prixRepository.saveAndFlush(prix);
     }
 
+    public void deleteById(Integer id) {
+        prixRepository.deleteById(id);
+    }
+
 
 }

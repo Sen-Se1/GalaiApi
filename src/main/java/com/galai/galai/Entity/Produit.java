@@ -33,10 +33,14 @@ public class Produit {
     @NotNull(message = "La quantité du produit ne peut pas être vide")
     private Integer Qtt;
 
+    @ElementCollection
+    @Column(name = "photo")
+    private List<byte[]> photos;
+
     @Column(nullable = false)
-    @NotNull(message = "La photo du produit ne peut pas être vide")
+    @NotNull(message = "La vignette du produit ne peut pas être vide")
     @Lob
-    private byte[] photo;
+    private byte[] thumbnail;
 
     private Integer remise = 0;
 }
