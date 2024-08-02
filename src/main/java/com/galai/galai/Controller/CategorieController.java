@@ -1,30 +1,21 @@
 package com.galai.galai.Controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.galai.galai.Entity.Categorie;
-import com.galai.galai.Entity.Prix;
-import com.galai.galai.Entity.Produit;
 import com.galai.galai.Service.CategorieService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/categorie")
 public class CategorieController {
+    private final CategorieService CS;
 
-    @Autowired
-    public final CategorieService CS;
-
-    public CategorieController(CategorieService cs) {
-        CS = cs;
-    }
 
     @PostMapping("/save")
     public ResponseEntity<?> save(@RequestBody Categorie categorie) {
@@ -57,8 +48,9 @@ public class CategorieController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateCategorie(@PathVariable("id") Integer id,@RequestBody Categorie categorie) {
+    public ResponseEntity<?> updateCategorie(@PathVariable("id") Integer id, @RequestBody Categorie categorie) {
         try {
+            System.out.println(categorie);
             Categorie updatedCategorie = CS.updateCategorie(id, categorie);
             return ResponseEntity.ok(updatedCategorie);
         } catch (Exception e) {

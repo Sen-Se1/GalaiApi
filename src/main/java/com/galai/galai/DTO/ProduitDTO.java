@@ -17,6 +17,7 @@ public class ProduitDTO {
     private String thumbnail;
     private List<String> photos;
     private List<Prix> prixList;
+    private CategorieDTO categorie;
 
     public static ProduitDTO convertToDto(Produit produit) {
         ProduitDTO produitDTO = new ProduitDTO();
@@ -35,6 +36,10 @@ public class ProduitDTO {
         }
 
         produitDTO.setPrixList(produit.getPrixList());
+
+        if (produit.getCategorie() != null) {
+            produitDTO.setCategorie(CategorieDTO.convertToDto(produit.getCategorie()));
+        }
         return produitDTO;
     }
 }

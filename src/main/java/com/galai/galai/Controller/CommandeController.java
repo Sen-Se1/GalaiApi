@@ -4,6 +4,7 @@ import com.galai.galai.Entity.Commande;
 import com.galai.galai.Entity.LigneCmd;
 import com.galai.galai.Service.CommandeService;
 import com.galai.galai.Service.LigneCmdService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,16 +13,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("commande")
 public class CommandeController {
-    @Autowired
     private final CommandeService CS;
     private final LigneCmdService LS;
-
-    public CommandeController (CommandeService cs, LigneCmdService ls) {
-        CS = cs;
-        LS = ls;
-    }
 
 @PostMapping("/save")
 public ResponseEntity<?> save(@RequestBody Commande commande) {

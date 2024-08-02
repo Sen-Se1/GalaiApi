@@ -1,27 +1,27 @@
 package com.galai.galai.Service;
 
+import com.galai.galai.Entity.Categorie;
 import com.galai.galai.Entity.Prix;
 import com.galai.galai.Entity.Produit;
 import com.galai.galai.Repository.ProduitRepository;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ProduitService {
-    @Autowired
     private final ProduitRepository PR;
     private final PrixService PS;
-    public ProduitService(ProduitRepository pr, PrixService ps) {
-        PR = pr;
-        PS = ps;
-    }
+    private final CategorieService CS;
 
     public Produit save(Produit produit) {
         Produit savedProduit = PR.saveAndFlush(produit);
@@ -34,7 +34,7 @@ public class ProduitService {
         return savedProduit;
     }
 
-    public Produit saveProductWithPhotos(String nom, String description, Integer qtt, MultipartFile thumbnail, List<MultipartFile> photos, Integer remise, List<Prix> prixList) throws IOException {
+    public Produit saveProductWithPhotos(String nom, String description, Integer qtt, MultipartFile thumbnail, List<MultipartFile> photos, Integer remise, List<Prix> prixList, Categorie categorie) throws IOException {
         Produit produit = new Produit();
         produit.setNom(nom);
         produit.setDescription(description);
@@ -54,7 +54,14 @@ public class ProduitService {
 
         produit.setPhotos(photoBytes);
         produit.setPrixList(prixList);
-        return save(produit);
+        produit.setCategorie(categorie);
+        Produit savedProduit = save(produit);
+
+
+        categorie.getProduits().add(savedProduit);
+        CS.save(categorie);
+
+        return savedProduit;
     }
 
     public List<Produit> saveAll(List<Produit> articles) {
@@ -77,7 +84,7 @@ public class ProduitService {
     public Produit getProduitById(Integer id) {
 
         Optional<Produit> optionalArticle = PR.findById(id);
-        return optionalArticle.orElseThrow(() ->new EntityNotFoundException("Product not found"));
+        return optionalArticle.orElseThrow(() -> new EntityNotFoundException("Product not found"));
     }
 
     public Produit updateProduit(Integer id, Produit updatedProduit) {
@@ -101,14 +108,53 @@ public class ProduitService {
 
         if (updatedProduit.getPrixList() != null) {
             existingProduit.getPrixList().clear();
-            for (Prix newPrix : updatedProduit.getPrixList()) {
+            List<Prix> reversedPrixList = new ArrayList<>(updatedProduit.getPrixList());
+            Collections.reverse(reversedPrixList);
+
+            for (Prix newPrix : reversedPrixList) {
                 newPrix.setProduit(existingProduit);
                 existingProduit.getPrixList().add(newPrix);
             }
         }
 
+        if (updatedProduit.getCategorie() != null) {
+            existingProduit.setCategorie(updatedProduit.getCategorie());
+        }
         return PR.saveAndFlush(existingProduit);
     }
+//public Produit updateProduit(Integer id, Produit updatedProduit) {
+//    Produit existingProduit = PR.findById(id)
+//            .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+//
+//    existingProduit.setNom(updatedProduit.getNom());
+//    existingProduit.setDescription(updatedProduit.getDescription());
+//    existingProduit.setQtt(updatedProduit.getQtt());
+//    existingProduit.setRemise(updatedProduit.getRemise());
+//
+//    byte[] newThumbnail = updatedProduit.getThumbnail();
+//    if (newThumbnail != null && newThumbnail.length > 0) {
+//        existingProduit.setThumbnail(newThumbnail);
+//    }
+//
+//    List<byte[]> newPhotos = updatedProduit.getPhotos();
+//    if (newPhotos != null && !newPhotos.isEmpty()) {
+//        existingProduit.setPhotos(newPhotos);
+//    }
+//
+//    if (updatedProduit.getPrixList() != null) {
+//        existingProduit.getPrixList().clear();
+//        for (Prix newPrix : updatedProduit.getPrixList()) {
+//            newPrix.setProduit(existingProduit);
+//            existingProduit.getPrixList().add(newPrix);
+//        }
+//    }
+//
+//    if (updatedProduit.getCategorie() != null) {
+//        existingProduit.setCategorie(updatedProduit.getCategorie());
+//    }
+//
+//    return PR.saveAndFlush(existingProduit);
+//}
 
     public void delete(Integer id) {
         PR.deleteById(id);

@@ -4,6 +4,7 @@ import com.galai.galai.Entity.Commande;
 import com.galai.galai.Entity.LigneCmd;
 import com.galai.galai.Repository.CommandeRepository;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,13 +12,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class CommandeService {
-    @Autowired
-    public final CommandeRepository CR;
+    private final CommandeRepository CR;
 
-    public CommandeService(CommandeRepository cr) {
-        CR = cr;
-    }
     public List<Commande> getAllCommande() {
         return CR.findAll();
     }

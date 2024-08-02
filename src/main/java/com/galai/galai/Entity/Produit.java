@@ -1,5 +1,6 @@
 package com.galai.galai.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ public class Produit {
     private String nom;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Prix> prixList;
 
     @Column(nullable = false)
@@ -34,13 +36,18 @@ public class Produit {
     private Integer Qtt;
 
     @ElementCollection
-    @Column(name = "photo")
+    @Column(name = "photos")
     private List<byte[]> photos;
 
     @Column(nullable = false)
     @NotNull(message = "La vignette du produit ne peut pas être vide")
-    @Lob
     private byte[] thumbnail;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "categorie_id", nullable = false)
+    @Lob
+    @JsonIgnore
+    private Categorie categorie;
 
     private Integer remise = 0;
 }
