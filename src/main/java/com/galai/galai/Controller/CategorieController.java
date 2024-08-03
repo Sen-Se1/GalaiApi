@@ -1,13 +1,20 @@
 package com.galai.galai.Controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.galai.galai.Entity.Categorie;
+import com.galai.galai.Entity.Prix;
+import com.galai.galai.Entity.Produit;
 import com.galai.galai.Service.CategorieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -16,14 +23,13 @@ import java.util.List;
 public class CategorieController {
     private final CategorieService CS;
 
-
     @PostMapping("/save")
-    public ResponseEntity<?> save(@RequestBody Categorie categorie) {
+    public ResponseEntity<?> saveWithPhoto(@RequestParam("nom") String nom, @RequestParam("description") String description, @RequestParam("photo") MultipartFile photo) {
         try {
-            Categorie savedCategorie = CS.save(categorie);
+            Categorie savedCategorie = CS.saveCategorieWithPhoto(nom, description, photo);
             return ResponseEntity.ok().body(savedCategorie);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing request: " + e.getMessage());
         }
     }
 
@@ -48,15 +54,21 @@ public class CategorieController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateCategorie(@PathVariable("id") Integer id, @RequestBody Categorie categorie) {
+    public ResponseEntity<?> updateProduit(
+            @PathVariable Integer id,
+            @RequestParam("nom") String nom,
+            @RequestParam("description") String description,
+            @RequestParam(value = "photo", required = false) MultipartFile photo) {
         try {
-            System.out.println(categorie);
-            Categorie updatedCategorie = CS.updateCategorie(id, categorie);
-            return ResponseEntity.ok(updatedCategorie);
+            Categorie updatedCategorie = new Categorie();
+            updatedCategorie.setNom(nom);
+            updatedCategorie.setDescription(description);
+            updatedCategorie.setPhoto(photo.getBytes());
+            Categorie savedCategorie = CS.updateCategorie(id, updatedCategorie);
+            return ResponseEntity.ok(savedCategorie);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-
     }
 
     @DeleteMapping("/delete/{id}")

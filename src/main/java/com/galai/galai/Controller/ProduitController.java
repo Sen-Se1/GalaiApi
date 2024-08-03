@@ -10,7 +10,6 @@ import com.galai.galai.Service.CategorieService;
 import com.galai.galai.Service.PrixService;
 import com.galai.galai.Service.ProduitService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,26 +29,14 @@ public class ProduitController {
     private final PrixService PrS;
     private final CategorieService CS;
 
-
     @PostMapping("/save")
-    public ResponseEntity<?> save(@RequestBody Produit produit) {
-        try {
-            Produit savedProduit = PS.save(produit);
-            return ResponseEntity.ok().body(savedProduit);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-
-    @PostMapping("/save2")
     public ResponseEntity<?> saveWithPhotos(@RequestParam("nom") String nom, @RequestParam("description") String description, @RequestParam("qtt") Integer qtt, @RequestParam(value = "remise", required = false, defaultValue = "0") Integer remise, @RequestParam("categorie") Integer categorieId, @RequestParam("prixList") String prixListJson, @RequestParam("thumbnail") MultipartFile thumbnail, @RequestParam("photos") List<MultipartFile> photos) {
         try {
             // Convert JSON string to List<Prix>
             ObjectMapper mapper = new ObjectMapper();
             List<Prix> prixList = null;
             if (!prixListJson.isEmpty()) {
-                prixList = mapper.readValue(prixListJson, new TypeReference<List<Prix>>() {
-                });
+                prixList = mapper.readValue(prixListJson, new TypeReference<List<Prix>>() {});
             }
             Categorie categorie = CS.getCategorieById(categorieId);
             Produit savedProduit = PS.saveProductWithPhotos(nom, description, qtt, thumbnail, photos, remise, prixList, categorie);

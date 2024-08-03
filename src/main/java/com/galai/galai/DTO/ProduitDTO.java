@@ -4,16 +4,18 @@ import com.galai.galai.Entity.Prix;
 import com.galai.galai.Entity.Produit;
 import lombok.Data;
 
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
+
 @Data
 public class ProduitDTO {
     private Integer id;
     private String nom;
     private String description;
-    private Integer qtt;
-    private Integer remise;
+    private int qtt;
+    private double remise;
     private String thumbnail;
     private List<String> photos;
     private List<Prix> prixList;
@@ -29,16 +31,26 @@ public class ProduitDTO {
         if (produit.getThumbnail() != null) {
             produitDTO.setThumbnail(Base64.getEncoder().encodeToString(produit.getThumbnail()));
         }
+
+
         if (produit.getPhotos() != null) {
             produitDTO.setPhotos(produit.getPhotos().stream()
                     .map(photo -> Base64.getEncoder().encodeToString(photo))
                     .collect(Collectors.toList()));
         }
-
         produitDTO.setPrixList(produit.getPrixList());
 
         if (produit.getCategorie() != null) {
-            produitDTO.setCategorie(CategorieDTO.convertToDto(produit.getCategorie()));
+            CategorieDTO categorieDTO = new CategorieDTO();
+            categorieDTO.setId(produit.getCategorie().getId());
+            categorieDTO.setNom(produit.getCategorie().getNom());
+            categorieDTO.setDescription(produit.getCategorie().getDescription());
+
+            if (produit.getCategorie().getPhoto() != null) {
+                categorieDTO.setPhoto(Base64.getEncoder().encodeToString(produit.getCategorie().getPhoto()));
+            }
+
+            produitDTO.setCategorie(categorieDTO);
         }
         return produitDTO;
     }

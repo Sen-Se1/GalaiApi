@@ -6,13 +6,11 @@ import com.galai.galai.Entity.Produit;
 import com.galai.galai.Repository.ProduitRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,7 +53,7 @@ public class ProduitService {
         produit.setPhotos(photoBytes);
         produit.setPrixList(prixList);
         produit.setCategorie(categorie);
-        Produit savedProduit = save(produit);
+        Produit savedProduit = this.save(produit);
 
 
         categorie.getProduits().add(savedProduit);
@@ -108,10 +106,7 @@ public class ProduitService {
 
         if (updatedProduit.getPrixList() != null) {
             existingProduit.getPrixList().clear();
-            List<Prix> reversedPrixList = new ArrayList<>(updatedProduit.getPrixList());
-            Collections.reverse(reversedPrixList);
-
-            for (Prix newPrix : reversedPrixList) {
+            for (Prix newPrix : updatedProduit.getPrixList()) {
                 newPrix.setProduit(existingProduit);
                 existingProduit.getPrixList().add(newPrix);
             }
