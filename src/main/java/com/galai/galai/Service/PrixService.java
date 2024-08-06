@@ -3,7 +3,6 @@ package com.galai.galai.Service;
 import com.galai.galai.Entity.Prix;
 import com.galai.galai.Repository.PrixRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service

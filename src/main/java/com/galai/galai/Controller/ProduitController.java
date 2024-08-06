@@ -36,7 +36,8 @@ public class ProduitController {
             ObjectMapper mapper = new ObjectMapper();
             List<Prix> prixList = null;
             if (!prixListJson.isEmpty()) {
-                prixList = mapper.readValue(prixListJson, new TypeReference<List<Prix>>() {});
+                prixList = mapper.readValue(prixListJson, new TypeReference<>() {
+                });
             }
             Categorie categorie = CS.getCategorieById(categorieId);
             Produit savedProduit = PS.saveProductWithPhotos(nom, description, qtt, thumbnail, photos, remise, prixList, categorie);
@@ -96,7 +97,7 @@ public class ProduitController {
             ObjectMapper mapper = new ObjectMapper();
             List<Prix> prixList = null;
             if (prixListJson != null && !prixListJson.isEmpty()) {
-                prixList = mapper.readValue(prixListJson, new TypeReference<List<Prix>>() {
+                prixList = mapper.readValue(prixListJson, new TypeReference<>() {
                 });
             }
 

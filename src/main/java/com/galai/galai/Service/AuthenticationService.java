@@ -3,14 +3,12 @@ package com.galai.galai.Service;
 import com.galai.galai.Entity.AuthenticationResponse;
 import com.galai.galai.Entity.User;
 import com.galai.galai.Repository.UserRepository;
-import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
