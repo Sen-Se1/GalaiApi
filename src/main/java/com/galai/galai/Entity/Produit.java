@@ -45,7 +45,6 @@ public class Produit {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "categorie_id", nullable = false)
-    @Lob
     @JsonIgnore
     private Categorie categorie;
 

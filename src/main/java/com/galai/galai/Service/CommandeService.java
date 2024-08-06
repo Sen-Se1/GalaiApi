@@ -1,7 +1,9 @@
 package com.galai.galai.Service;
 
+import com.galai.galai.Entity.Categorie;
 import com.galai.galai.Entity.Commande;
 import com.galai.galai.Entity.LigneCmd;
+import com.galai.galai.Entity.Produit;
 import com.galai.galai.Repository.CommandeRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -19,14 +21,10 @@ public class CommandeService {
     public List<Commande> getAllCommande() {
         return CR.findAll();
     }
-    public Commande getById( Integer id){
-  Optional<Commande> optionalArticle = CR.findById(id);
-  return optionalArticle.orElseThrow(() ->new EntityNotFoundException("Command not found"));
-}
 
-    public Commande getCommandeByNom(String nom) {
-        Optional<Commande> optionalCommande = CR.findByNom(nom);
-        return optionalCommande.orElseThrow(() -> new EntityNotFoundException("Command not found with name " + nom ));
+    public Commande getById(Integer id) {
+        Optional<Commande> optionalArticle = CR.findById(id);
+        return optionalArticle.orElseThrow(() -> new EntityNotFoundException("Command not found"));
     }
 
     public Commande save(Commande commande) {
@@ -34,9 +32,7 @@ public class CommandeService {
     }
 
     public void delete(Integer id) {
-        CR.deleteById(id);
+        Commande existingCommande = this.getById(id);
+        CR.deleteById(existingCommande.getId());
     }
-
-
-
 }

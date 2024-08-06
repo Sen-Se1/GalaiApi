@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -52,7 +53,7 @@ public class Commande {
     private LocalDateTime dateCreation;
 
     @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LigneCmd> lignesCommande;
+    private List<LigneCmd> lignesCommande = new ArrayList<>();
 
     @Transient
     private Double prixTotal;
@@ -70,12 +71,10 @@ public class Commande {
     private void calculatePrixTotal() {
         if (lignesCommande != null && !lignesCommande.isEmpty()) {
             prixTotal = lignesCommande.stream()
-                    .mapToDouble(ligne -> ligne.getPrix() * ligne.getQte())
-                    .sum() + 7000;
+                    .mapToDouble(ligne -> ligne.getPrix() * ligne.getQtt())
+                    .sum() + 7;
         } else {
-            prixTotal = 7000.0;
+            prixTotal = 7.0;
         }
     }
-
-
 }

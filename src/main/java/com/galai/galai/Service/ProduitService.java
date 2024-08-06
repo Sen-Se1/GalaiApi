@@ -82,7 +82,7 @@ public class ProduitService {
     public Produit getProduitById(Integer id) {
 
         Optional<Produit> optionalArticle = PR.findById(id);
-        return optionalArticle.orElseThrow(() -> new EntityNotFoundException("Product not found"));
+        return optionalArticle.orElseThrow(() -> new EntityNotFoundException("Product with ID " + id + " does not exist."));
     }
 
     public Produit updateProduit(Integer id, Produit updatedProduit) {

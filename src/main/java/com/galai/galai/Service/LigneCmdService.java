@@ -9,10 +9,11 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class LigneCmdService {
-    private LigneCmdRepository ligneCmdRepository;
+    @Autowired
+    private LigneCmdRepository ligneCmdRepo;
 
     public LigneCmd save(LigneCmd ligneCmd) {
-        return ligneCmdRepository.save(ligneCmd);
+        return ligneCmdRepo.save(ligneCmd);
     }
 }
 

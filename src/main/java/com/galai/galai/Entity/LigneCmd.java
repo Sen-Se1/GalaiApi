@@ -15,8 +15,12 @@ import lombok.NoArgsConstructor;
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
-    private String nomProduit;
-    private int qte;
+
+    @ManyToOne
+    @JoinColumn(name = "produit_id", referencedColumnName = "id")
+    private Produit produit;
+
+    private int Qtt;
     private Double grammage;
     private Double prix;
 
