@@ -32,12 +32,11 @@ public class ProduitService {
         return savedProduit;
     }
 
-    public Produit saveProductWithPhotos(String nom, String description, Integer qtt, MultipartFile thumbnail, List<MultipartFile> photos, Integer remise, List<Prix> prixList, Categorie categorie) throws IOException {
+    public Produit saveProductWithPhotos(String nom, String description, MultipartFile thumbnail, List<MultipartFile> photos, List<Prix> prixList, Categorie categorie) throws IOException {
         Produit produit = new Produit();
         produit.setNom(nom);
         produit.setDescription(description);
-        produit.setQtt(qtt);
-        produit.setRemise(remise);
+
         produit.setThumbnail(thumbnail.getBytes());
 
         // Convert MultipartFile list to byte array list with exception handling
@@ -62,19 +61,6 @@ public class ProduitService {
         return savedProduit;
     }
 
-    public List<Produit> saveAll(List<Produit> articles) {
-        for (Produit produit : articles) {
-            Produit savedProduit = PR.saveAndFlush(produit);
-            if (produit.getPrixList() != null) {
-                for (Prix prix : produit.getPrixList()) {
-                    prix.setProduit(savedProduit);
-                    PS.save(prix);
-                }
-            }
-        }
-        return articles;
-    }
-
     public List<Produit> getAllProduit() {
         return PR.findAll();
     }
@@ -86,13 +72,11 @@ public class ProduitService {
     }
 
     public Produit updateProduit(Integer id, Produit updatedProduit) {
-        Produit existingProduit = PR.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+        Produit existingProduit = this.getProduitById(id);
 
         existingProduit.setNom(updatedProduit.getNom());
         existingProduit.setDescription(updatedProduit.getDescription());
-        existingProduit.setQtt(updatedProduit.getQtt());
-        existingProduit.setRemise(updatedProduit.getRemise());
+
 
         byte[] newThumbnail = updatedProduit.getThumbnail();
         if (newThumbnail != null && newThumbnail.length > 0) {
@@ -117,6 +101,8 @@ public class ProduitService {
         }
         return PR.saveAndFlush(existingProduit);
     }
+
+
 //public Produit updateProduit(Integer id, Produit updatedProduit) {
 //    Produit existingProduit = PR.findById(id)
 //            .orElseThrow(() -> new EntityNotFoundException("Product not found"));
@@ -157,7 +143,10 @@ public class ProduitService {
 
     public void removePrixFromProduit(Integer produitId, Integer prixId) {
         Produit produit = getProduitById(produitId);
-        produit.getPrixList().removeIf(prix -> prix.getId().equals(prixId));
+        boolean removed = produit.getPrixList().removeIf(prix -> prix.getId().equals(prixId));
+        if (!removed) {
+            throw new EntityNotFoundException("Prix with ID " + prixId + " not found in Produit with ID " + produitId);
+        }
         save(produit);
     }
 }

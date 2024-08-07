@@ -30,34 +30,24 @@ public class ProduitController {
     private final CategorieService CS;
 
     @PostMapping("/save")
-    public ResponseEntity<?> saveWithPhotos(@RequestParam("nom") String nom, @RequestParam("description") String description, @RequestParam("qtt") Integer qtt, @RequestParam(value = "remise", required = false, defaultValue = "0") Integer remise, @RequestParam("categorie") Integer categorieId, @RequestParam("prixList") String prixListJson, @RequestParam("thumbnail") MultipartFile thumbnail, @RequestParam("photos") List<MultipartFile> photos) {
+    public ResponseEntity<?> saveWithPhotos(@RequestParam("nom") String nom, @RequestParam("description") String description, @RequestParam("categorieId") Integer categorieId, @RequestParam("prixList") String prixListJson, @RequestParam("thumbnail") MultipartFile thumbnail, @RequestParam("photos") List<MultipartFile> photos) {
         try {
             // Convert JSON string to List<Prix>
             ObjectMapper mapper = new ObjectMapper();
             List<Prix> prixList = null;
             if (!prixListJson.isEmpty()) {
-                prixList = mapper.readValue(prixListJson, new TypeReference<>() {
-                });
+                prixList = mapper.readValue(prixListJson, new TypeReference<>() {});
             }
-            Categorie categorie = CS.getCategorieById(categorieId);
-            Produit savedProduit = PS.saveProductWithPhotos(nom, description, qtt, thumbnail, photos, remise, prixList, categorie);
+            Categorie categorie = CS.getExistingCategorieById(categorieId);
+            Produit savedProduit = PS.saveProductWithPhotos(nom, description, thumbnail, photos, prixList, categorie);
             return ResponseEntity.ok().body(savedProduit);
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing request: " + e.getMessage());
         }
     }
 
-    @PostMapping("/saveAll")
-    public ResponseEntity<?> saveAll(@RequestBody List<Produit> produit) {
-        try {
-            return ResponseEntity.ok().body(PS.saveAll(produit));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/getAll")
-    public ResponseEntity<?> getAllProduit() {
+    @GetMapping("/getAllForAdmin")
+    public ResponseEntity<?> getAllProduitForAdmin() {
         try {
             List<Produit> produits = PS.getAllProduit();
             List<ProduitDTO> produitsDTO = produits.stream()
@@ -69,11 +59,35 @@ public class ProduitController {
         }
     }
 
+    @GetMapping("/getAll")
+    public ResponseEntity<?> getAllProduit() {
+        try {
+            List<Produit> produits = PS.getAllProduit();
+            List<ProduitDTO.GetAllProduitClientDTO> produitsDTO = produits.stream()
+                    .map(ProduitDTO.GetAllProduitClientDTO::convertToDto)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok().body(produitsDTO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/getByIdForAdmin/{id}")
+    public ResponseEntity<?> getProduitByIdForAdmi(@PathVariable("id") Integer id) {
+        try {
+            Produit produit = PS.getProduitById(id);
+            ProduitDTO.GetByIdProduitAdminDTO produitDTO = ProduitDTO.GetByIdProduitAdminDTO.convertToDto(produit);
+            return ResponseEntity.ok().body(produitDTO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
     @GetMapping("/getById/{id}")
     public ResponseEntity<?> getProduitById(@PathVariable("id") Integer id) {
         try {
             Produit produit = PS.getProduitById(id);
-            ProduitDTO produitDTO = ProduitDTO.convertToDto(produit);
+            ProduitDTO.GetByIdProduitClientDTO produitDTO = ProduitDTO.GetByIdProduitClientDTO.convertToDto(produit);
             return ResponseEntity.ok().body(produitDTO);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -81,32 +95,27 @@ public class ProduitController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Produit> updateProduit(
+    public ResponseEntity<?> updateProduit(
             @PathVariable Integer id,
             @RequestParam("nom") String nom,
             @RequestParam("description") String description,
-            @RequestParam("qtt") Integer qtt,
-            @RequestParam(value = "remise", required = false, defaultValue = "0") Integer remise,
             @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail,
             @RequestParam(value = "photos", required = false) List<MultipartFile> photos,
             @RequestParam(value = "prixList", required = false) String prixListJson,
-            @RequestParam(value = "categorie", required = false) Integer categorieId) {
+            @RequestParam(value = "categorieId", required = false) Integer categorieId) {
 
         try {
             // Convert JSON string to List<Prix>
             ObjectMapper mapper = new ObjectMapper();
             List<Prix> prixList = null;
             if (prixListJson != null && !prixListJson.isEmpty()) {
-                prixList = mapper.readValue(prixListJson, new TypeReference<>() {
-                });
+                prixList = mapper.readValue(prixListJson, new TypeReference<>() {});
             }
 
             // Create updated Produit object
             Produit updatedProduit = new Produit();
             updatedProduit.setNom(nom);
             updatedProduit.setDescription(description);
-            updatedProduit.setQtt(qtt);
-            updatedProduit.setRemise(remise);
             updatedProduit.setThumbnail(thumbnail.getBytes());
 
             // Convert MultipartFile list to byte array list with exception handling
@@ -118,18 +127,22 @@ public class ProduitController {
                     }
                 }
             }
+
             updatedProduit.setPhotos(photoBytes);
             updatedProduit.setPrixList(prixList);
 
-            Categorie categorie = CS.getCategorieById(categorieId);
+            Categorie categorie = CS.getExistingCategorieById(categorieId);
             updatedProduit.setCategorie(categorie);
 
             Produit savedProduit = PS.updateProduit(id, updatedProduit);
             return ResponseEntity.ok(savedProduit);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating produit: " + e.getMessage());
         }
     }
+
+
+
 //@PutMapping("/update/{id}")
 //public ResponseEntity<?> updateProduit(
 //        @PathVariable Integer id,

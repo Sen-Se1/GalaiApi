@@ -31,10 +31,6 @@ public class Produit {
     @NotNull(message = "La description du produit ne peut pas être vide")
     private String description;
 
-    @Column(nullable = false)
-    @NotNull(message = "La quantité du produit ne peut pas être vide")
-    private Integer Qtt;
-
     @ElementCollection
     @Column(name = "photos")
     private List<byte[]> photos;
@@ -47,6 +43,4 @@ public class Produit {
     @JoinColumn(name = "categorie_id", nullable = false)
     @JsonIgnore
     private Categorie categorie;
-
-    private Integer remise = 0;
 }

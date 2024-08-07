@@ -1,5 +1,6 @@
 package com.galai.galai.Controller;
 
+import com.galai.galai.DTO.CategorieDTO;
 import com.galai.galai.Entity.Categorie;
 import com.galai.galai.Service.CategorieService;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,17 @@ public class CategorieController {
     @GetMapping("/getAll")
     public ResponseEntity<?> getAllCategorie() {
         try {
-            List<Categorie> categories = CS.getAllCategorie();
+            List<CategorieDTO> categories = CS.getAllCategorie();
+            return ResponseEntity.ok().body(categories);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/getAll-WithoutProdFile")
+    public ResponseEntity<?> getAllCategorieWithoutProdFile() {
+        try {
+            List<CategorieDTO.GetAllCategorieWithoutProdFileDTO> categories = CS.getAllCategorieWithoutProdFile();
             return ResponseEntity.ok().body(categories);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -40,12 +51,13 @@ public class CategorieController {
     @GetMapping("/getById/{id}")
     public ResponseEntity<?> getCategorieById(@PathVariable("id") Integer id) {
         try {
-            Categorie categorie = CS.getCategorieById(id);
-            return ResponseEntity.ok().body(categorie);
+            CategorieDTO.GetByCategorieIdDTO categorieDTO = CS.getCategorieById(id);
+            return ResponseEntity.ok().body(categorieDTO);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateProduit(

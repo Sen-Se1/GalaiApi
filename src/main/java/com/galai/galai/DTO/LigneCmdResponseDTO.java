@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LigneCmdResponseDTO {
-    private ProduitResponseDTO produit;
+    private ProduitDTO.ProduitForCommandeDTO produit;
     private Double prix;
     private Double grammage;
     private int qtt;
