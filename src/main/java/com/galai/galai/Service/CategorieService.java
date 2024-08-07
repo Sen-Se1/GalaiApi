@@ -35,32 +35,36 @@ public class CategorieService {
         return this.save(categorie);
     }
 
-    public List<CategorieDTO> getAllCategorie() {
+    public List<CategorieDTO> getAllCategorieProdsWithThumb() {
         List<Categorie> categories = CR.findAll();
         return categories.stream()
                 .map(CategorieDTO::convertToDto)
                 .collect(Collectors.toList());
     }
 
-    public List<CategorieDTO.GetAllCategorieWithoutProdFileDTO> getAllCategorieWithoutProdFile() {
+    public List<CategorieDTO.GetAllCategorieWithoutProdPhotosDTO> getAllCategorieWithoutProdPhotos() {
         List<Categorie> categories = CR.findAll();
         return categories.stream()
-                .map(CategorieDTO.GetAllCategorieWithoutProdFileDTO::convertToDto)
+                .map(CategorieDTO.GetAllCategorieWithoutProdPhotosDTO::convertToDto)
                 .collect(Collectors.toList());
     }
 
-    public CategorieDTO.GetByCategorieIdDTO getCategorieById(Integer id) {
-        Optional<Categorie> optionalCategorie = CR.findById(id);
-        Categorie categorie = optionalCategorie.orElseThrow(() -> new EntityNotFoundException("Categorie not found"));
-        return CategorieDTO.GetByCategorieIdDTO.convertToDto(categorie);
+    public List<CategorieDTO.GetAllCategorieNameDTO> getAllNameCategorie() {
+        List<Categorie> categories = CR.findAll();
+        return categories.stream()
+                .map(CategorieDTO.GetAllCategorieNameDTO::convertToDto)
+                .collect(Collectors.toList());
     }
 
     public Categorie getExistingCategorieById(Integer id) {
         Optional<Categorie> optionalCategorie = CR.findById(id);
-        Categorie categorie = optionalCategorie.orElseThrow(() -> new EntityNotFoundException("Categorie not found"));
-        return categorie;
+        return optionalCategorie.orElseThrow(() -> new EntityNotFoundException("Categorie with ID " + id + " does not exist."));
     }
 
+    public CategorieDTO.GetCategorieByIdWithoutProduitDTO getCategorieByIdWithoutProduit(Integer id) {
+        Categorie categorie = this.getExistingCategorieById(id);
+        return CategorieDTO.GetCategorieByIdWithoutProduitDTO.convertToDto(categorie);
+    }
 
     public Categorie updateCategorie(Integer id, Categorie updatedCategorie) {
         Categorie existingCategorie = this.getExistingCategorieById(id);

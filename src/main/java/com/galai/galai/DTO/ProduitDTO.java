@@ -18,7 +18,7 @@ public class ProduitDTO {
     private String nom;
     private String thumbnail;
     private List<Prix> prixList;
-    private CategorieDTO.GetAllCategorieForProdDTO categorie;
+    private CategorieDTO.GetAllCategorieNameDTO categorie;
 
     public static ProduitDTO convertToDto(Produit produit) {
         ProduitDTO produitDTO = new ProduitDTO();
@@ -32,7 +32,7 @@ public class ProduitDTO {
         produitDTO.setPrixList(produit.getPrixList());
 
         if (produit.getCategorie() != null) {
-            CategorieDTO.GetAllCategorieForProdDTO categorieDTO = new CategorieDTO.GetAllCategorieForProdDTO();
+            CategorieDTO.GetAllCategorieNameDTO categorieDTO = new CategorieDTO.GetAllCategorieNameDTO();
             categorieDTO.setId(produit.getCategorie().getId());
             categorieDTO.setNom(produit.getCategorie().getNom());
             produitDTO.setCategorie(categorieDTO);
@@ -43,14 +43,14 @@ public class ProduitDTO {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class GetAllProduitClientDTO {
+    public static class GetAllProduitWithoutCategorieAndPhotosDTO {
         private Integer id;
         private String nom;
         private String thumbnail;
         private List<Prix> prixList;
 
-        public static GetAllProduitClientDTO convertToDto(Produit produit) {
-            GetAllProduitClientDTO produitDTO = new GetAllProduitClientDTO();
+        public static GetAllProduitWithoutCategorieAndPhotosDTO convertToDto(Produit produit) {
+            GetAllProduitWithoutCategorieAndPhotosDTO produitDTO = new GetAllProduitWithoutCategorieAndPhotosDTO();
             produitDTO.setId(produit.getId());
             produitDTO.setNom(produit.getNom());
             if (produit.getThumbnail() != null) {
@@ -66,22 +66,22 @@ public class ProduitDTO {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class GetByIdProduitAdminDTO {
+    public static class GetByIdProduitWithCategorieNameWithoutFilesDTO {
         private Integer id;
         private String nom;
         private String description;
         private List<Prix> prixList;
-        private CategorieDTO.GetAllCategorieForProdDTO categorie;
+        private CategorieDTO.GetAllCategorieNameDTO categorie;
 
-        public static GetByIdProduitAdminDTO convertToDto(Produit produit) {
-            GetByIdProduitAdminDTO produitDTO = new GetByIdProduitAdminDTO();
+        public static GetByIdProduitWithCategorieNameWithoutFilesDTO convertToDto(Produit produit) {
+            GetByIdProduitWithCategorieNameWithoutFilesDTO produitDTO = new GetByIdProduitWithCategorieNameWithoutFilesDTO();
             produitDTO.setId(produit.getId());
             produitDTO.setNom(produit.getNom());
             produitDTO.setDescription(produit.getDescription());
             produitDTO.setPrixList(produit.getPrixList());
 
             if (produit.getCategorie() != null) {
-                CategorieDTO.GetAllCategorieForProdDTO categorieDTO = new CategorieDTO.GetAllCategorieForProdDTO();
+                CategorieDTO.GetAllCategorieNameDTO categorieDTO = new CategorieDTO.GetAllCategorieNameDTO();
                 categorieDTO.setId(produit.getCategorie().getId());
                 categorieDTO.setNom(produit.getCategorie().getNom());
                 produitDTO.setCategorie(categorieDTO);

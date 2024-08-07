@@ -37,15 +37,15 @@ public class CategorieDTO {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class GetAllCategorieWithoutProdFileDTO {
+    public static class GetAllCategorieWithoutProdPhotosDTO {
         private Integer id;
         private String nom;
         private String description;
         private String photo;
         private Integer nbProduit;
 
-        public static GetAllCategorieWithoutProdFileDTO convertToDto(Categorie categorie) {
-            GetAllCategorieWithoutProdFileDTO categorieDTO = new GetAllCategorieWithoutProdFileDTO();
+        public static GetAllCategorieWithoutProdPhotosDTO convertToDto(Categorie categorie) {
+            GetAllCategorieWithoutProdPhotosDTO categorieDTO = new GetAllCategorieWithoutProdPhotosDTO();
             categorieDTO.setId(categorie.getId());
             categorieDTO.setNom(categorie.getNom());
             categorieDTO.setDescription(categorie.getDescription());
@@ -60,14 +60,14 @@ public class CategorieDTO {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class GetByCategorieIdDTO {
+    public static class GetCategorieByIdWithoutProduitDTO {
         private Integer id;
         private String nom;
         private String description;
         private String photo;
 
-        public static GetByCategorieIdDTO convertToDto(Categorie categorie) {
-            GetByCategorieIdDTO categorieDTO = new GetByCategorieIdDTO();
+        public static GetCategorieByIdWithoutProduitDTO convertToDto(Categorie categorie) {
+            GetCategorieByIdWithoutProduitDTO categorieDTO = new GetCategorieByIdWithoutProduitDTO();
             categorieDTO.setId(categorie.getId());
             categorieDTO.setNom(categorie.getNom());
             categorieDTO.setDescription(categorie.getDescription());
@@ -81,16 +81,15 @@ public class CategorieDTO {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class GetAllCategorieForProdDTO {
+    public static class GetAllCategorieNameDTO {
         private Integer id;
         private String nom;
 
-        public static GetAllCategorieForProdDTO convertToDto(Categorie categorie) {
-            GetAllCategorieForProdDTO categorieDTO = new GetAllCategorieForProdDTO();
+        public static GetAllCategorieNameDTO convertToDto(Categorie categorie) {
+            GetAllCategorieNameDTO categorieDTO = new GetAllCategorieNameDTO();
             categorieDTO.setId(categorie.getId());
             categorieDTO.setNom(categorie.getNom());
             return categorieDTO;
         }
     }
-
 }

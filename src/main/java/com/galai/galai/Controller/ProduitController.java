@@ -18,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @RestController
@@ -29,14 +28,15 @@ public class ProduitController {
     private final PrixService PrS;
     private final CategorieService CS;
 
-    @PostMapping("/save")
+    @PostMapping("/admin/save")
     public ResponseEntity<?> saveWithPhotos(@RequestParam("nom") String nom, @RequestParam("description") String description, @RequestParam("categorieId") Integer categorieId, @RequestParam("prixList") String prixListJson, @RequestParam("thumbnail") MultipartFile thumbnail, @RequestParam("photos") List<MultipartFile> photos) {
         try {
             // Convert JSON string to List<Prix>
             ObjectMapper mapper = new ObjectMapper();
             List<Prix> prixList = null;
             if (!prixListJson.isEmpty()) {
-                prixList = mapper.readValue(prixListJson, new TypeReference<>() {});
+                prixList = mapper.readValue(prixListJson, new TypeReference<>() {
+                });
             }
             Categorie categorie = CS.getExistingCategorieById(categorieId);
             Produit savedProduit = PS.saveProductWithPhotos(nom, description, thumbnail, photos, prixList, categorie);
@@ -46,55 +46,27 @@ public class ProduitController {
         }
     }
 
-    @GetMapping("/getAllForAdmin")
-    public ResponseEntity<?> getAllProduitForAdmin() {
+    @GetMapping("/admin/getAll/CategorieName/withoutPhotos")
+    public ResponseEntity<?> getAllProduitWithCategorieNameWithoutPhoto() {
         try {
-            List<Produit> produits = PS.getAllProduit();
-            List<ProduitDTO> produitsDTO = produits.stream()
-                    .map(ProduitDTO::convertToDto)
-                    .collect(Collectors.toList());
-            return ResponseEntity.ok().body(produitsDTO);
+            List<ProduitDTO> produits = PS.getAllProduitWithCategorieNameWithoutPhoto();
+            return ResponseEntity.ok().body(produits);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
-    @GetMapping("/getAll")
-    public ResponseEntity<?> getAllProduit() {
+    @GetMapping("/admin/getById/CategorieName/withoutFiles/{id}")
+    public ResponseEntity<?> getProduitByIdWithCategorieNameWithoutFiles(@PathVariable("id") Integer id) {
         try {
-            List<Produit> produits = PS.getAllProduit();
-            List<ProduitDTO.GetAllProduitClientDTO> produitsDTO = produits.stream()
-                    .map(ProduitDTO.GetAllProduitClientDTO::convertToDto)
-                    .collect(Collectors.toList());
-            return ResponseEntity.ok().body(produitsDTO);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/getByIdForAdmin/{id}")
-    public ResponseEntity<?> getProduitByIdForAdmi(@PathVariable("id") Integer id) {
-        try {
-            Produit produit = PS.getProduitById(id);
-            ProduitDTO.GetByIdProduitAdminDTO produitDTO = ProduitDTO.GetByIdProduitAdminDTO.convertToDto(produit);
+            ProduitDTO.GetByIdProduitWithCategorieNameWithoutFilesDTO produitDTO = PS.getProduitByIdWithCategorieNameWithoutFiles(id);
             return ResponseEntity.ok().body(produitDTO);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
-    @GetMapping("/getById/{id}")
-    public ResponseEntity<?> getProduitById(@PathVariable("id") Integer id) {
-        try {
-            Produit produit = PS.getProduitById(id);
-            ProduitDTO.GetByIdProduitClientDTO produitDTO = ProduitDTO.GetByIdProduitClientDTO.convertToDto(produit);
-            return ResponseEntity.ok().body(produitDTO);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-
-    @PutMapping("/update/{id}")
+    @PutMapping("/admin/update/{id}")
     public ResponseEntity<?> updateProduit(
             @PathVariable Integer id,
             @RequestParam("nom") String nom,
@@ -109,7 +81,8 @@ public class ProduitController {
             ObjectMapper mapper = new ObjectMapper();
             List<Prix> prixList = null;
             if (prixListJson != null && !prixListJson.isEmpty()) {
-                prixList = mapper.readValue(prixListJson, new TypeReference<>() {});
+                prixList = mapper.readValue(prixListJson, new TypeReference<>() {
+                });
             }
 
             // Create updated Produit object
@@ -141,89 +114,42 @@ public class ProduitController {
         }
     }
 
-
-
-//@PutMapping("/update/{id}")
-//public ResponseEntity<?> updateProduit(
-//        @PathVariable Integer id,
-//        @RequestParam("nom") String nom,
-//        @RequestParam("description") String description,
-//        @RequestParam("qtt") Integer qtt,
-//        @RequestParam(value = "remise", required = false, defaultValue = "0") Integer remise,
-//        @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail,
-//        @RequestParam(value = "photos", required = false) List<MultipartFile> photos,
-//        @RequestParam(value = "prixList", required = false) String prixListJson,
-//        @RequestParam(value = "categorie", required = false) Integer categorieId) {
-//
-//    try {
-//        // Convert JSON string to List<Prix>
-//        ObjectMapper mapper = new ObjectMapper();
-//        List<Prix> prixList = null;
-//        if (prixListJson != null && !prixListJson.isEmpty()) {
-//            prixList = mapper.readValue(prixListJson, new TypeReference<List<Prix>>() {});
-//        }
-//
-//        // Fetch the existing Produit from the database
-//        Produit existingProduit = PS.getProduitById(id);
-//
-//        // Update the fields of the existing Produit
-//        existingProduit.setNom(nom);
-//        existingProduit.setDescription(description);
-//        existingProduit.setQtt(qtt);
-//        existingProduit.setRemise(remise);
-//
-//        if (thumbnail != null && !thumbnail.isEmpty()) {
-//            existingProduit.setThumbnail(thumbnail.getBytes());
-//        }
-//
-//        // Convert MultipartFile list to byte array list with exception handling
-//        List<byte[]> photoBytes = new ArrayList<>();
-//        if (photos != null && !photos.isEmpty()) {
-//            for (MultipartFile photo : photos) {
-//                if (!photo.isEmpty()) {
-//                    photoBytes.add(photo.getBytes());
-//                }
-//            }
-//        }
-//        existingProduit.setPhotos(photoBytes);
-//
-//        if (prixList != null) {
-//            existingProduit.getPrixList().clear();
-//            for (Prix newPrix : prixList) {
-//                newPrix.setProduit(existingProduit);
-//                existingProduit.getPrixList().add(newPrix);
-//            }
-//        }
-//
-//        if (categorieId != null) {
-//            Categorie categorie = CS.getCategorieById(categorieId);
-//            existingProduit.setCategorie(categorie);
-//        }
-//
-//        // Save the updated Produit
-//        Produit savedProduit = PS.updateProduit(id, existingProduit);
-//        return ResponseEntity.ok(savedProduit);
-//    } catch (Exception e) {
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating produit: " + e.getMessage());
-//    }
-//}
-
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/admin/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Integer id) {
         try {
-            PS.delete(PS.getProduitById(id).getId());
+            PS.delete(id);
             return ResponseEntity.ok().body("produit : " + id + " supprimée avec succées");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
-    @DeleteMapping("/prix/delete/{id}/{produitId}")
+    @DeleteMapping("/admin/prix/delete/{id}/{produitId}")
     public ResponseEntity<?> deletePrix(@PathVariable("id") Integer id, @PathVariable("produitId") Integer produitId) {
         try {
             PS.removePrixFromProduit(produitId, id);
             PrS.deleteById(id);
             return ResponseEntity.ok().body("Prix : " + id + " supprimé avec succès");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/getAll/withoutCategorie/withoutPhotos")
+    public ResponseEntity<?> getAllProduitWithoutCategorieAndPhotos() {
+        try {
+            List<ProduitDTO.GetAllProduitWithoutCategorieAndPhotosDTO> produits = PS.getAllProduitWithoutCategorieAndPhotos();
+            return ResponseEntity.ok().body(produits);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/getById/withoutCategorie/{id}")
+    public ResponseEntity<?> getProduitByIdWithoutCategorie(@PathVariable("id") Integer id) {
+        try {
+            ProduitDTO.GetByIdProduitClientDTO produitDTO = PS.getProduitByIdWithoutCategorie(id);
+            return ResponseEntity.ok().body(produitDTO);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

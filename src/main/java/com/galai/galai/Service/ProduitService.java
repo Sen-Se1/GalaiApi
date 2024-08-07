@@ -1,5 +1,6 @@
 package com.galai.galai.Service;
 
+import com.galai.galai.DTO.ProduitDTO;
 import com.galai.galai.Entity.Categorie;
 import com.galai.galai.Entity.Prix;
 import com.galai.galai.Entity.Produit;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -61,18 +63,37 @@ public class ProduitService {
         return savedProduit;
     }
 
-    public List<Produit> getAllProduit() {
-        return PR.findAll();
+    public List<ProduitDTO> getAllProduitWithCategorieNameWithoutPhoto() {
+        List<Produit> produits = PR.findAll();
+        return produits.stream()
+                .map(ProduitDTO::convertToDto)
+                .collect(Collectors.toList());
     }
 
-    public Produit getProduitById(Integer id) {
+    public List<ProduitDTO.GetAllProduitWithoutCategorieAndPhotosDTO> getAllProduitWithoutCategorieAndPhotos() {
+        List<Produit> produits = PR.findAll();
+        return produits.stream()
+                .map(ProduitDTO.GetAllProduitWithoutCategorieAndPhotosDTO::convertToDto)
+                .collect(Collectors.toList());
+    }
 
-        Optional<Produit> optionalArticle = PR.findById(id);
-        return optionalArticle.orElseThrow(() -> new EntityNotFoundException("Product with ID " + id + " does not exist."));
+    public Produit getExistingProduitById(Integer id) {
+        Optional<Produit> optionalProduit = PR.findById(id);
+        return optionalProduit.orElseThrow(() -> new EntityNotFoundException("Product with ID " + id + " does not exist."));
+    }
+
+    public ProduitDTO.GetByIdProduitWithCategorieNameWithoutFilesDTO getProduitByIdWithCategorieNameWithoutFiles(Integer id) {
+        Produit produit = this.getExistingProduitById(id);
+        return ProduitDTO.GetByIdProduitWithCategorieNameWithoutFilesDTO.convertToDto(produit);
+    }
+
+    public ProduitDTO.GetByIdProduitClientDTO getProduitByIdWithoutCategorie(Integer id) {
+        Produit produit = this.getExistingProduitById(id);
+        return ProduitDTO.GetByIdProduitClientDTO.convertToDto(produit);
     }
 
     public Produit updateProduit(Integer id, Produit updatedProduit) {
-        Produit existingProduit = this.getProduitById(id);
+        Produit existingProduit = this.getExistingProduitById(id);
 
         existingProduit.setNom(updatedProduit.getNom());
         existingProduit.setDescription(updatedProduit.getDescription());
@@ -102,47 +123,13 @@ public class ProduitService {
         return PR.saveAndFlush(existingProduit);
     }
 
-
-//public Produit updateProduit(Integer id, Produit updatedProduit) {
-//    Produit existingProduit = PR.findById(id)
-//            .orElseThrow(() -> new EntityNotFoundException("Product not found"));
-//
-//    existingProduit.setNom(updatedProduit.getNom());
-//    existingProduit.setDescription(updatedProduit.getDescription());
-//    existingProduit.setQtt(updatedProduit.getQtt());
-//    existingProduit.setRemise(updatedProduit.getRemise());
-//
-//    byte[] newThumbnail = updatedProduit.getThumbnail();
-//    if (newThumbnail != null && newThumbnail.length > 0) {
-//        existingProduit.setThumbnail(newThumbnail);
-//    }
-//
-//    List<byte[]> newPhotos = updatedProduit.getPhotos();
-//    if (newPhotos != null && !newPhotos.isEmpty()) {
-//        existingProduit.setPhotos(newPhotos);
-//    }
-//
-//    if (updatedProduit.getPrixList() != null) {
-//        existingProduit.getPrixList().clear();
-//        for (Prix newPrix : updatedProduit.getPrixList()) {
-//            newPrix.setProduit(existingProduit);
-//            existingProduit.getPrixList().add(newPrix);
-//        }
-//    }
-//
-//    if (updatedProduit.getCategorie() != null) {
-//        existingProduit.setCategorie(updatedProduit.getCategorie());
-//    }
-//
-//    return PR.saveAndFlush(existingProduit);
-//}
-
     public void delete(Integer id) {
-        PR.deleteById(id);
+        Produit produit = this.getExistingProduitById(id);
+        PR.deleteById(produit.getId());
     }
 
     public void removePrixFromProduit(Integer produitId, Integer prixId) {
-        Produit produit = getProduitById(produitId);
+        Produit produit = this.getExistingProduitById(produitId);
         boolean removed = produit.getPrixList().removeIf(prix -> prix.getId().equals(prixId));
         if (!removed) {
             throw new EntityNotFoundException("Prix with ID " + prixId + " not found in Produit with ID " + produitId);
