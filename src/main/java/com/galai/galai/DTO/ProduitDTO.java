@@ -148,8 +148,15 @@ public class ProduitDTO {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ProduitForCommandeDTO {
+    public static class GetProduitNameDTO {
         private Integer id;
         private String nom;
+
+        public static GetProduitNameDTO convertToDto(Produit produit) {
+            GetProduitNameDTO produitDTO = new GetProduitNameDTO();
+            produitDTO.setId(produit.getId());
+            produitDTO.setNom(produit.getNom());
+            return produitDTO;
+        }
     }
 }
