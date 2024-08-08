@@ -70,7 +70,7 @@ public class CategorieController {
             updatedCategorie.setDescription(description);
             updatedCategorie.setPhoto(photo.getBytes());
             Categorie savedCategorie = CS.updateCategorie(id, updatedCategorie);
-            return ResponseEntity.ok(savedCategorie);
+            return ResponseEntity.ok(CategorieDTO.GetCategorieByIdWithoutProduitDTO.convertToDto(savedCategorie));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
