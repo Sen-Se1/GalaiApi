@@ -7,6 +7,7 @@ import com.galai.galai.Entity.LigneCmd;
 import com.galai.galai.Entity.Prix;
 import com.galai.galai.Entity.Produit;
 import com.galai.galai.Repository.CommandeRepository;
+import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,9 @@ import java.util.stream.Collectors;
 public class CommandeService {
     private final CommandeRepository CR;
     private final ProduitService PS;
+    private final EmailService ES;
 
-    public Commande save(CommandeDTO commandeDTO) {
+    public Commande save(CommandeDTO commandeDTO) throws MessagingException {
         Commande commande = new Commande();
         commande.setNom(commandeDTO.getNom());
         commande.setPrenom(commandeDTO.getPrenom());
@@ -55,8 +57,9 @@ public class CommandeService {
 
             commande.getLignesCommande().add(ligneCmd);
         }
-
-        return CR.saveAndFlush(commande);
+        Commande savedCommande = CR.saveAndFlush(commande);
+        ES.sendEmailToAdmin(savedCommande);
+        return savedCommande;
     }
 
     public List<CommandeDTO.CommandeResponseDTO> getAllCommande() {
