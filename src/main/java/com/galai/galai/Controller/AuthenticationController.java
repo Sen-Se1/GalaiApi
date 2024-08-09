@@ -5,7 +5,6 @@ import com.galai.galai.Entity.User;
 import com.galai.galai.Service.AuthenticationService;
 import com.galai.galai.Service.JwtService;
 import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.MalformedJwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
