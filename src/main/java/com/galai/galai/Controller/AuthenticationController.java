@@ -4,6 +4,8 @@ import com.galai.galai.Entity.AuthenticationResponse;
 import com.galai.galai.Entity.User;
 import com.galai.galai.Service.AuthenticationService;
 import com.galai.galai.Service.JwtService;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +32,12 @@ public class AuthenticationController {
         }
 
         String jwtToken = token.replace("Bearer ", "");
-        boolean isValid = jwtService.isTokenValid(jwtToken);
-        return ResponseEntity.ok(isValid);
-    }
 
+        try {
+            boolean isValid = jwtService.isTokenValid(jwtToken);
+            return ResponseEntity.ok(isValid);
+        } catch (JwtException e) {
+            return ResponseEntity.ok(false);
+        }
+    }
 }
