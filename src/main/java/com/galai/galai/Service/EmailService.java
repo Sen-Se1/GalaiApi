@@ -1,11 +1,10 @@
 package com.galai.galai.Service;
 
 import com.galai.galai.Entity.Commande;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
+import com.resend.Resend;
+import com.resend.core.exception.ResendException;
+import com.resend.services.emails.model.CreateEmailOptions;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
@@ -15,21 +14,22 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EmailService {
 
-    private final JavaMailSender emailSender;
-
-    public void sendHtmlMessage(String to, String subject, String htmlBody) throws MessagingException {
-        MimeMessage message = emailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
-        helper.setFrom("Galai - best honey in ur city <houssemmbarki615@gmail.com>");
-        helper.setTo(to);
-        helper.setSubject(subject);
-        helper.setText(htmlBody, true);
-
-        emailSender.send(message);
+    public void sendHtmlMessage(String to, String subject, String htmlBody) throws ResendException {
+        String apiKey = "re_WtQ7jeXe_MuCxYM7A59fGnNkTbooJXs17";
+        Resend client = new Resend(apiKey);
+        CreateEmailOptions params = CreateEmailOptions.builder()
+                .from("Galai - best honey in ur city <onboarding@resend.dev>")
+                .to(to)
+//                .cc("carbon@example.com", "copy@example.com")
+//                .bcc("blind@example.com", "carbon.copy@example.com")
+                .replyTo("mbarkihoussem99@gmail.com")
+                .subject(subject)
+                .html(htmlBody)
+                .build();
+        client.emails().send(params);
     }
 
-    public void sendEmailToAdmin(Commande commande) throws MessagingException {
+    public void sendEmailToAdmin(Commande commande) throws ResendException {
         String htmlBody = generateEmailBody(commande);
         sendHtmlMessage("mbarkihoussem99@gmail.com", "New Command", htmlBody);
     }
