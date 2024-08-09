@@ -45,4 +45,14 @@ public class CommandeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+    @GetMapping("/getCount")
+    public ResponseEntity<?> getCount() {
+        try {
+            Long countCommande = CS.getCountCommande();
+            return ResponseEntity.ok().body(countCommande);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 }

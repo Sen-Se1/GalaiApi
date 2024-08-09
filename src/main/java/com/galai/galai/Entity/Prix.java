@@ -26,7 +26,7 @@ public class Prix {
 
     @Column(nullable = false)
     @NotNull(message = "La quantité du produit ne peut pas être vide")
-    private Integer Qtt;
+    private Integer qtt;
 
     private Integer remise = 0;
     @ManyToOne

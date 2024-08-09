@@ -24,7 +24,7 @@ public class Categorie {
     @NotBlank(message = "Le nom est obligatoire")
     private String nom;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     @NotNull(message = "La description du categorie ne peut pas être vide")
     private String description;
 

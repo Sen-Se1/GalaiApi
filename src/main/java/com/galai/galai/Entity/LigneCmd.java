@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
     @JoinColumn(name = "produit_id", referencedColumnName = "id")
     private Produit produit;
 
-    private int Qtt;
+    private Integer qtt;
     private Double grammage;
     private Double prix;
 

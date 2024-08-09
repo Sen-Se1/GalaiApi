@@ -27,7 +27,7 @@ public class Produit {
     @JsonIgnore
     private List<Prix> prixList;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     @NotNull(message = "La description du produit ne peut pas être vide")
     private String description;
 

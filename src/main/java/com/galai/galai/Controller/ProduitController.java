@@ -29,7 +29,13 @@ public class ProduitController {
     private final CategorieService CS;
 
     @PostMapping("/admin/save")
-    public ResponseEntity<?> saveWithPhotos(@RequestParam("nom") String nom, @RequestParam("description") String description, @RequestParam("categorieId") Integer categorieId, @RequestParam("prixList") String prixListJson, @RequestParam("thumbnail") MultipartFile thumbnail, @RequestParam("photos") List<MultipartFile> photos) {
+    public ResponseEntity<?> saveWithPhotos(
+            @RequestParam("nom") String nom,
+            @RequestParam("description") String description,
+            @RequestParam("categorieId") Integer categorieId,
+            @RequestParam("prixList") String prixListJson,
+            @RequestParam("thumbnail") MultipartFile thumbnail,
+            @RequestParam("photos") List<MultipartFile> photos) {
         try {
             // Convert JSON string to List<Prix>
             ObjectMapper mapper = new ObjectMapper();
@@ -150,6 +156,16 @@ public class ProduitController {
         try {
             ProduitDTO.GetByIdProduitClientDTO produitDTO = PS.getProduitByIdWithoutCategorie(id);
             return ResponseEntity.ok().body(produitDTO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/getCount")
+    public ResponseEntity<?> getCount() {
+        try {
+            Long countProduit = PS.getCountProduit();
+            return ResponseEntity.ok().body(countProduit);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

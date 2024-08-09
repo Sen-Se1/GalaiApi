@@ -39,7 +39,7 @@ public class SecurityConfig {
                 })
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req -> req
-                        .requestMatchers("/login/**", "/register/**").permitAll()
+                        .requestMatchers("/login/**", "/register/**", "/validateToken/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/prix/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/produit/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/produit/**").hasAuthority("ADMIN")

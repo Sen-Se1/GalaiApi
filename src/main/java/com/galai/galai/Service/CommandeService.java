@@ -77,4 +77,9 @@ public class CommandeService {
         Commande existingCommande = this.getById(id);
         CR.deleteById(existingCommande.getId());
     }
+
+    public Long getCountCommande(){
+        Long countCommande = CR.count();
+        return countCommande;
+    }
 }

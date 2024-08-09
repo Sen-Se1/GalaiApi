@@ -12,7 +12,7 @@ public class LigneCmdDTO {
     private Integer id;
     private Integer produitId;
     private Integer prixId;
-    private int Qtt;
+    private Integer qtt;
 
     @Data
     @NoArgsConstructor
@@ -22,7 +22,7 @@ public class LigneCmdDTO {
         private ProduitDTO.GetProduitNameDTO produit;
         private Double prix;
         private Double grammage;
-        private int qtt;
+        private Integer qtt;
 
         public static LigneCmdResponseDTO convertToDto(LigneCmd ligneCmd) {
             return new LigneCmdResponseDTO(

@@ -136,5 +136,10 @@ public class ProduitService {
         }
         save(produit);
     }
+
+    public Long getCountProduit(){
+        Long countProduit = PR.count();
+        return countProduit;
+    }
 }
 
