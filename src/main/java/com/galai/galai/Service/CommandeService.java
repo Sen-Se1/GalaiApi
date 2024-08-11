@@ -7,7 +7,7 @@ import com.galai.galai.Entity.LigneCmd;
 import com.galai.galai.Entity.Prix;
 import com.galai.galai.Entity.Produit;
 import com.galai.galai.Repository.CommandeRepository;
-import jakarta.mail.MessagingException;
+import com.resend.core.exception.ResendException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class CommandeService {
     private final ProduitService PS;
     private final EmailService ES;
 
-    public Commande save(CommandeDTO commandeDTO) throws MessagingException {
+    public Commande save(CommandeDTO commandeDTO) throws ResendException {
         Commande commande = new Commande();
         commande.setNom(commandeDTO.getNom());
         commande.setPrenom(commandeDTO.getPrenom());
