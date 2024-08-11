@@ -31,7 +31,7 @@ public class EmailService {
 
     public void sendEmailToAdmin(Commande commande) throws ResendException {
         String htmlBody = generateEmailBody(commande);
-        sendHtmlMessage("boujnehrania3@gmail.com", "New Command", htmlBody);
+        sendHtmlMessage("mbarkihoussem99@gmail.com", "New Command", htmlBody);
     }
 
     private String generateEmailBody(Commande commande) {
