@@ -39,21 +39,30 @@ public class SecurityConfig {
                 })
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req -> req
+
+                        // Auth routes
                         .requestMatchers("/login/**", "/register/**", "/validateToken/**").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/prix/**").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/produit/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/produit/**").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/produit/**").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/produit/**").hasAuthority("ADMIN")
+
+                        // Categorie routes
+                        .requestMatchers(HttpMethod.POST, "/categorie/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/categorie/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/categorie/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/categorie/admin/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/categorie/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/categorie/**").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/categorie/**").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/categorie/**").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/commande/admin/getAll").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/commande/getCount").permitAll()
+
+                        // Produit routes
+                        .requestMatchers(HttpMethod.POST, "/produit/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/produit/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/produit/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/produit/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/produit/**").permitAll()
+
+                        // Commande routes
                         .requestMatchers(HttpMethod.POST, "/commande/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/commande/**").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/commande/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/commande/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/commande/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/commande/**").permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(userDetailsServiceImp)
